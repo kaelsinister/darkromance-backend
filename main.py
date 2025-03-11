@@ -1,58 +1,56 @@
-import os
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+import os
 from openai import OpenAI
-from fastapi.middleware.cors import CORSMiddleware  
+from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI app
 app = FastAPI()
 
-# ✅ Fix for 404 Not Found on "/"
-@app.get("/")
-def read_root():
-    return {"message": "Dark Romance Backend is Live"}
-
-# ✅ CORS Middleware (Ensures frontend can talk to backend)
+# Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow requests from frontend
+    allow_origins=["*"],  # Allow all origins (Change this in production)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Request model for API input
+# Load OpenAI API key from environment
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# Define request model
 class StoryRequest(BaseModel):
     length: str
-    spice_level: str
-    character_traits: str
+    spiceLevel: str
+    characterTraits: str
     trope: str
 
-# Story generation function
-def generate_story(length, spice_level, character_traits, trope):
-    prompt = f"""
-    Write a {length} dark romance story with a {spice_level} level of intimacy. 
-    The main character has the following traits: {character_traits}. 
-    The story follows the trope: {trope}.
-    """
-
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-    response = client.chat.completions.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=1000
-    )
-    
-    return response.choices[0].message.content
-
-# ✅ API endpoint to generate a story
+# Define story generation function
 @app.post("/generate-story/")
-def generate(request: StoryRequest):
-    story = generate_story(request.length, request.spice_level, request.character_traits, request.trope)
-    return {"story": story}
+def generate_story(request: StoryRequest):
+    try:
+        # Generate a prompt based on user input
+        prompt = (
+            f"Write a {request.length.lower()} dark romance story with a {request.spiceLevel.lower()} spice level. "
+            f"The main character is {request.characterTraits}. The story follows the {request.trope.lower()} trope."
+        )
 
-# Run the server (only for local testing)
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+        # Send the prompt to OpenAI API
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=1000
+        )
+
+        # Extract and return the generated story
+        story_text = response.choices[0].message.content
+        return {"story": story_text}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating story: {str(e)}")
+
+# Root Route (Prevents 404 errors on base URL)
+@app.get("/")
+def read_root():
+    return {"message": "Dark Romance AI Backend is Running"}
