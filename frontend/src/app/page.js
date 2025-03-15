@@ -1,92 +1,99 @@
-"use client";
-import { useState } from "react";
+import { useState } from 'react';
 
 export default function Home() {
-  const [story, setStory] = useState("");
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    length: "Short",
-    spiceLevel: "Mild",
-    characterTraits: "",
+    length: "Medium",
+    spiceLevel: "Steamy",
     trope: "Enemies to Lovers",
+    characterTraits: "Brooding, mysterious, protective",
+    characterAge: "27",
+    characterBackstory: "",
+    ending: "Happy",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [loading, setLoading] = useState(false);
+  const [story, setStory] = useState("");
 
   const generateStory = async () => {
-    setLoading(true); // 🔥 Start loading animation
-    setStory(""); // Clear previous story
+    setLoading(true);
+    setStory("");
 
-    try {
-      const response = await fetch("https://darkromance-backend.onrender.com/generate-story/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+    const response = await fetch("https://darkromance-backend.onrender.com/generate-story/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-      const data = await response.json();
-      setStory(data.story);
-    } catch (error) {
-      setStory("Error generating story. Please try again.");
-    }
-
-    setLoading(false); // 🔥 Stop loading animation
+    const data = await response.json();
+    setStory(data.story);
+    setLoading(false);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <div className="story-container">
-        <h1 className="text-red-400 text-2xl font-bold text-center mb-4">
-          Dark Romance Story Generator
-        </h1>
+    <div className="story-container">
+      <h1>Generate Your Dark Romance Story</h1>
 
-        {/* Form */}
-        <label className="block mb-2 text-sm font-medium">Story Length</label>
-        <select name="length" value={formData.length} onChange={handleChange} className="mb-4" disabled={loading}>
-          <option>Short</option>
-          <option>Medium</option>
-          <option>Long</option>
-        </select>
+      <label>Story Length:</label>
+      <select value={formData.length} onChange={(e) => setFormData({ ...formData, length: e.target.value })}>
+        <option value="Short">Short</option>
+        <option value="Medium">Medium</option>
+        <option value="Long">Long</option>
+      </select>
 
-        <label className="block mb-2 text-sm font-medium">Spice Level</label>
-        <select name="spiceLevel" value={formData.spiceLevel} onChange={handleChange} className="mb-4" disabled={loading}>
-          <option>Mild</option>
-          <option>Medium</option>
-          <option>Spicy</option>
-        </select>
+      <label>Spice Level:</label>
+      <select value={formData.spiceLevel} onChange={(e) => setFormData({ ...formData, spiceLevel: e.target.value })}>
+        <option value="Mild">Mild</option>
+        <option value="Steamy">Steamy</option>
+        <option value="Explicit">Explicit</option>
+      </select>
 
-        <label className="block mb-2 text-sm font-medium">Main Character Traits</label>
-        <input type="text" name="characterTraits" value={formData.characterTraits} onChange={handleChange} placeholder="e.g., brooding, protective, mysterious" className="mb-4" disabled={loading} />
+      <label>Romance Trope:</label>
+      <select value={formData.trope} onChange={(e) => setFormData({ ...formData, trope: e.target.value })}>
+        <option value="Enemies to Lovers">Enemies to Lovers</option>
+        <option value="Forbidden Love">Forbidden Love</option>
+        <option value="Billionaire & Bodyguard">Billionaire & Bodyguard</option>
+        <option value="Vampire Romance">Vampire Romance</option>
+        <option value="Arranged Marriage">Arranged Marriage</option>
+      </select>
 
-        <label className="block mb-2 text-sm font-medium">Romance Trope</label>
-        <select name="trope" value={formData.trope} onChange={handleChange} className="mb-4" disabled={loading}>
-          <option>Enemies to Lovers</option>
-          <option>Friends to Lovers</option>
-          <option>Forbidden Love</option>
-          <option>Arranged Marriage</option>
-        </select>
+      <label>Main Character Traits:</label>
+      <input
+        value={formData.characterTraits}
+        onChange={(e) => setFormData({ ...formData, characterTraits: e.target.value })}
+        placeholder="Brooding, mysterious, protective"
+      />
 
-        {/* Button & Loading Indicator */}
-        <button onClick={generateStory} disabled={loading}>
-          {loading ? (
-            <div className="flex items-center justify-center">
-              <div className="loader mr-2"></div> Generating...
-            </div>
-          ) : (
-            "Generate Story"
-          )}
-        </button>
-      </div>
+      <label>Main Character Age:</label>
+      <input
+        type="number"
+        value={formData.characterAge}
+        onChange={(e) => setFormData({ ...formData, characterAge: e.target.value })}
+        placeholder="e.g. 27"
+      />
 
-      {/* Story Display */}
+      <label>Main Character Backstory (optional):</label>
+      <textarea
+        value={formData.characterBackstory}
+        onChange={(e) => setFormData({ ...formData, characterBackstory: e.target.value })}
+        placeholder="A mysterious past..."
+      />
+
+      <label>Preferred Ending:</label>
+      <select value={formData.ending} onChange={(e) => setFormData({ ...formData, ending: e.target.value })}>
+        <option value="Happy">Happy</option>
+        <option value="Bittersweet">Bittersweet</option>
+        <option value="Tragic">Tragic</option>
+      </select>
+
+      <button onClick={generateStory} disabled={loading}>
+        {loading ? <div className="loader"></div> : "Generate Story"}
+      </button>
+
       {story && (
-        <div className="story-container mt-6">
-          <h2 className="text-red-400 text-xl font-bold mb-4">Your Story</h2>
-          <p className="whitespace-pre-wrap">{story}</p>
+        <div className="mt-4">
+          {story.split("\n").map((p, i) => (
+            <p key={i} className="mb-4">{p}</p>
+          ))}
         </div>
       )}
     </div>
