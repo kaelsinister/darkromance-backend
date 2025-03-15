@@ -11,7 +11,6 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -31,25 +30,34 @@ def generate_story(request: StoryRequest):
     try:
         if request.continueFrom:
             prompt = (
-                f"Continue the following dark romance story maintaining the same characters, plot details, names, and style:\n\n"
+                f"You are writing an engaging, novel-like dark romance story chapter. "
+                f"Here's what you previously wrote:\n\n"
                 f"{request.continueFrom}\n\n"
-                "Continue seamlessly from here, maintaining consistent character names, events, and overall continuity."
+                "Write the next chapter, seamlessly picking up where the last chapter left off. "
+                "Maintain consistent character names, traits, narrative tone, plot threads, and story progression. "
+                "End the chapter on an intriguing note or cliffhanger to encourage further reading."
             )
         else:
-            prompt = (
-                f"Write a {request.length.lower()} dark romance story "
-                f"with {request.spiceLevel.lower()} spice. "
-                f"The main character is {request.characterAge} years old, traits: {request.characterTraits}. "
-                f"Trope used: {request.trope}. Ending style: {request.ending.lower()}."
+            prompt_intro = (
+                f"Begin a {request.length.lower()} dark romance novel with {request.spiceLevel.lower()} spice. "
+                f"Central romance trope: '{request.trope}'. Main character is {request.characterAge} years old "
+                f"with traits: {request.characterTraits}. The story should end in a {request.ending.lower()} manner."
             )
+
             if request.characterBackstory:
-                prompt += f" Character's backstory: {request.characterBackstory}."
+                prompt_intro += f" The character's backstory is: {request.characterBackstory}."
+
+            prompt_intro += (
+                " Structure the output as Chapter 1 of a novel, introducing the main characters, setting, "
+                "and central conflict. The chapter should conclude with an engaging cliffhanger or narrative hook."
+            )
+            prompt = prompt_intro
 
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=1000,
-            temperature=0.8  # Optional, helps creative continuity
+            max_tokens=1200,
+            temperature=0.9  # Increased creativity for novel-like structure
         )
 
         story_text = response.choices[0].message.content.strip()
