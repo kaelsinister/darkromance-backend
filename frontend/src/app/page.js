@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from 'react';
 
 export default function Home() {
@@ -5,8 +7,8 @@ export default function Home() {
     length: "Medium",
     spiceLevel: "Steamy",
     trope: "Enemies to Lovers",
-    characterTraits: "Brooding, mysterious, protective",
-    characterAge: "27",
+    characterTraits: "",
+    characterAge: "",
     characterBackstory: "",
     ending: "Happy",
   });
@@ -14,18 +16,21 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [story, setStory] = useState("");
 
-  const generateStory = async () => {
+  const generateStory = async (continueStory = false) => {
     setLoading(true);
-    setStory("");
+
+    const requestBody = continueStory
+      ? { ...formData, continueFrom: story }
+      : formData;
 
     const response = await fetch("https://darkromance-backend.onrender.com/generate-story/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(requestBody),
     });
 
     const data = await response.json();
-    setStory(data.story);
+    setStory((prevStory) => (continueStory ? `${prevStory}\n\n${data.story}` : data.story));
     setLoading(false);
   };
 
@@ -35,32 +40,32 @@ export default function Home() {
 
       <label>Story Length:</label>
       <select value={formData.length} onChange={(e) => setFormData({ ...formData, length: e.target.value })}>
-        <option value="Short">Short</option>
-        <option value="Medium">Medium</option>
-        <option value="Long">Long</option>
+        <option>Short</option>
+        <option>Medium</option>
+        <option>Long</option>
       </select>
 
       <label>Spice Level:</label>
       <select value={formData.spiceLevel} onChange={(e) => setFormData({ ...formData, spiceLevel: e.target.value })}>
-        <option value="Mild">Mild</option>
-        <option value="Steamy">Steamy</option>
-        <option value="Explicit">Explicit</option>
+        <option>Mild</option>
+        <option>Steamy</option>
+        <option>Explicit</option>
       </select>
 
       <label>Romance Trope:</label>
       <select value={formData.trope} onChange={(e) => setFormData({ ...formData, trope: e.target.value })}>
-        <option value="Enemies to Lovers">Enemies to Lovers</option>
-        <option value="Forbidden Love">Forbidden Love</option>
-        <option value="Billionaire & Bodyguard">Billionaire & Bodyguard</option>
-        <option value="Vampire Romance">Vampire Romance</option>
-        <option value="Arranged Marriage">Arranged Marriage</option>
+        <option>Enemies to Lovers</option>
+        <option>Forbidden Love</option>
+        <option>Billionaire & Bodyguard</option>
+        <option>Vampire Romance</option>
+        <option>Arranged Marriage</option>
       </select>
 
       <label>Main Character Traits:</label>
       <input
         value={formData.characterTraits}
         onChange={(e) => setFormData({ ...formData, characterTraits: e.target.value })}
-        placeholder="Brooding, mysterious, protective"
+        placeholder="e.g. Brooding, mysterious, protective"
       />
 
       <label>Main Character Age:</label>
@@ -72,7 +77,8 @@ export default function Home() {
       />
 
       <label>Main Character Backstory (optional):</label>
-      <textarea
+      <input
+        type="text"
         value={formData.characterBackstory}
         onChange={(e) => setFormData({ ...formData, characterBackstory: e.target.value })}
         placeholder="A mysterious past..."
@@ -80,21 +86,26 @@ export default function Home() {
 
       <label>Preferred Ending:</label>
       <select value={formData.ending} onChange={(e) => setFormData({ ...formData, ending: e.target.value })}>
-        <option value="Happy">Happy</option>
-        <option value="Bittersweet">Bittersweet</option>
-        <option value="Tragic">Tragic</option>
+        <option>Happy</option>
+        <option>Bittersweet</option>
+        <option>Tragic</option>
       </select>
 
-      <button onClick={generateStory} disabled={loading}>
+      <div className="my-4"></div>
+
+      <button onClick={() => generateStory(false)} disabled={loading}>
         {loading ? <div className="loader"></div> : "Generate Story"}
       </button>
 
       {story && (
-        <div className="mt-4">
+        <div className="mt-6">
           {story.split("\n").map((p, i) => (
             <p key={i} className="mb-4">{p}</p>
           ))}
-        </div>
+          <button className="mt-4" onClick={() => generateStory(true)} disabled={loading}>
+            {loading ? <div className="loader"></div> : "Continue Story"}
+          </button>
+      </div>
       )}
     </div>
   );
