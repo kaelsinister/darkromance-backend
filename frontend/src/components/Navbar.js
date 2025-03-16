@@ -15,15 +15,15 @@ export default function Navbar() {
           </h1>
         </Link>
 
-        {/* Hamburger Menu Button */}
+        {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden flex items-center justify-center w-10 h-10 rounded focus:outline-none transition-all duration-300 border border-gray-600"
+          className="md:hidden flex flex-col items-center justify-center w-12 h-12 border border-gray-600 rounded-md focus:outline-none transition-all"
         >
           {/* Icon: Three horizontal bars */}
-          <span className="block w-6 h-0.5 bg-gray-300 mb-1"></span>
-          <span className="block w-6 h-0.5 bg-gray-300 mb-1"></span>
-          <span className="block w-6 h-0.5 bg-gray-300"></span>
+          <span className="block w-7 h-0.5 bg-gray-300 mb-1 transition-all"></span>
+          <span className="block w-7 h-0.5 bg-gray-300 mb-1 transition-all"></span>
+          <span className="block w-7 h-0.5 bg-gray-300 transition-all"></span>
         </button>
 
         {/* Desktop Menu */}
