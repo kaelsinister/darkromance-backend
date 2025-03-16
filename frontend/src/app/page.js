@@ -30,7 +30,7 @@ export default function Home() {
       requestData.trope = formData.customTrope;
     }
 
-    const response = await fetch("http://localhost:8000/generate-story/", {
+    const response = await fetch("https://darkromance-backend.onrender.com", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestData),

@@ -45,7 +45,7 @@ def generate_story(request: BaseModel):
     Story Length: {request.length}
     Spice Level: {request.spiceLevel}
 
-    Write the story in chapters, ending with the indicated preferred ending type.
+    Write the story in chapters, with a compelling, immersive narrative. Spice level is the level of steamy scenes.
     """
 
     response = client.chat.completions.create(
