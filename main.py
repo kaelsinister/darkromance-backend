@@ -53,19 +53,41 @@ async def generate_story(request: Request):
     # ✅ Handle custom trope selection
     trope_value = story_request.trope if story_request.trope != "Other" else story_request.customTrope
 
-    prompt = f"""
-    Create a dark romance story with the following details:
-    - Main Character Name: {story_request.characterName}
-    - Main Character Age: {story_request.characterAge}
-    - Main Character Traits: {story_request.characterTraits}
-    - Main Character Backstory: {story_request.characterBackstory}
-    - Preferred Trope: {trope_value}
-    - Preferred Story Ending: {story_request.ending}
-    Story Length: {story_request.length}
-    Spice Level: {story_request.spiceLevel}
+prompt = f"""
+Create a dark romance novel with the following details:
 
-    Write the story in chapters, with a compelling, immersive narrative. Spice level is the level of steamy scenes.
-    """
+📌 **Main Character Information**
+- **Name:** {story_request.characterName}
+- **Age:** {story_request.characterAge}
+- **Traits:** {story_request.characterTraits}
+- **Backstory:** {story_request.characterBackstory}
+
+📖 **Story Preferences**
+- **Preferred Trope:** {trope_value}
+- **Preferred Ending:** {story_request.ending}
+- **Story Length:** {story_request.length}
+- **Spice Level:** {story_request.spiceLevel}
+
+### **Story Format**
+- Write this story in detailed **chapter format**.
+- Each chapter should be **well-paced**, at least **400-600 words long**.
+- Provide **scene transitions** and detailed **character interactions**.
+- Ensure proper **spacing** between paragraphs.
+- Spice level determines **romantic/steamy content intensity**.
+
+💡 **Example Formatting**
+---
+### Chapter 1: A Fateful Encounter
+[Detailed writing... minimum 400 words]
+
+---
+### Chapter 2: The Dark Secret
+[Detailed writing... minimum 400 words]
+---
+
+✍️ **Now, generate the story with this formatting.**
+"""
+
 
     # ✅ Log the generated prompt
     print("📝 Generated Prompt:\n", prompt)
@@ -75,7 +97,7 @@ async def generate_story(request: Request):
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=1200
+            max_tokens=2500
         )
 
         story = response.choices[0].message.content.strip()
