@@ -1,3 +1,4 @@
+from typing import Union  # ✅ Import Union for type hinting
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -9,21 +10,21 @@ app = FastAPI()
 # Allow frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins (change if needed)
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Request data structure
+# ✅ Updated StoryRequest Model
 class StoryRequest(BaseModel):
     length: str
     spiceLevel: str
     trope: str
-    customTrope: str = ""  # ✅ Added to handle "Other" trope selection
+    customTrope: str = ""
     characterTraits: str
     characterName: str
-    characterAge: Union[str, int]
+    characterAge: Union[str, int]  # ✅ Now properly defined
     characterBackstory: str
     ending: str
 
@@ -37,15 +38,15 @@ async def generate_story(request: Request):
 
     # ✅ Log raw request body
     body = await request.body()
-    print("📢 Received Request Data:", body.decode())  # ✅ Logs the JSON input
+    print("📢 Received Request Data:", body.decode())
 
     try:
-        # ✅ Parse JSON from request and validate
+        # ✅ Parse JSON and validate
         request_data = await request.json()
-        story_request = StoryRequest(**request_data)  # ✅ Validate input against StoryRequest model
+        story_request = StoryRequest(**request_data)
     except Exception as e:
         print("❌ Invalid request format:", str(e))
-        return {"error": "Invalid request format", "details": str(e)}  # ✅ Return error for bad requests
+        return {"error": "Invalid request format", "details": str(e)}
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -66,7 +67,7 @@ async def generate_story(request: Request):
     Write the story in chapters, with a compelling, immersive narrative. Spice level is the level of steamy scenes.
     """
 
-    # ✅ Log the generated prompt for debugging
+    # ✅ Log the generated prompt
     print("📝 Generated Prompt:\n", prompt)
 
     try:
@@ -83,4 +84,4 @@ async def generate_story(request: Request):
 
     except Exception as e:
         print("❌ OpenAI API Error:", str(e))
-        return {"error": "Failed to generate story", "details": str(e)}  # ✅ Return error if OpenAI API fails
+        return {"error": "Failed to generate story", "details": str(e)}
