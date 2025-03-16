@@ -1,50 +1,48 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-gray-900 shadow-md z-50">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo */}
-        <Link href="/" className="text-red-400 text-2xl font-bold">
-          DarkRomance.ai
-        </Link>
+    <nav className="fixed top-0 left-0 w-full bg-black shadow-md z-50 px-6 py-4 flex justify-between items-center">
+      {/* Logo */}
+      <Link href="/" className="text-red-400 text-2xl font-bold tracking-wide">
+        DarkRomance.ai
+      </Link>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-gray-300 focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          ☰
-        </button>
+      {/* Mobile Menu Button */}
+      <button
+        className="text-white text-2xl sm:text-xl p-2 focus:outline-none md:hidden"
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        ☰
+      </button>
 
-        {/* Desktop Navigation */}
-        <ul className="hidden md:flex space-x-6 text-gray-300 text-lg">
-          <li><Link href="/">Home</Link></li>
-          <li><Link href="/generator">Generator</Link></li>
-          <li><Link href="/pricing">Pricing</Link></li>
-          <li><Link href="/how-it-works">How It Works</Link></li>
-          <li><Link href="/faq">FAQ</Link></li>
-          <li><Link href="/contact">Contact</Link></li>
-        </ul>
-      </div>
-
-      {/* Mobile Dropdown Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-gray-800 p-4 text-center">
-          <ul className="space-y-4 text-gray-300 text-lg">
-            <li><Link href="/" onClick={() => setIsOpen(false)}>Home</Link></li>
-            <li><Link href="/generator" onClick={() => setIsOpen(false)}>Generator</Link></li>
-            <li><Link href="/pricing" onClick={() => setIsOpen(false)}>Pricing</Link></li>
-            <li><Link href="/how-it-works" onClick={() => setIsOpen(false)}>How It Works</Link></li>
-            <li><Link href="/faq" onClick={() => setIsOpen(false)}>FAQ</Link></li>
-            <li><Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
+      {/* Mobile Menu Dropdown */}
+      {menuOpen && (
+        <div className="absolute top-full left-0 w-full bg-gray-900 text-white shadow-lg z-50 md:hidden">
+          <ul className="flex flex-col space-y-3 p-4">
+            <li><Link href="/" className="hover:text-red-400" onClick={() => setMenuOpen(false)}>Home</Link></li>
+            <li><Link href="/generator" className="hover:text-red-400" onClick={() => setMenuOpen(false)}>Generator</Link></li>
+            <li><Link href="/how-it-works" className="hover:text-red-400" onClick={() => setMenuOpen(false)}>How It Works</Link></li>
+            <li><Link href="/pricing" className="hover:text-red-400" onClick={() => setMenuOpen(false)}>Pricing</Link></li>
+            <li><Link href="/faq" className="hover:text-red-400" onClick={() => setMenuOpen(false)}>FAQ</Link></li>
+            <li><Link href="/contact" className="hover:text-red-400" onClick={() => setMenuOpen(false)}>Contact</Link></li>
           </ul>
         </div>
       )}
+
+      {/* Desktop Menu */}
+      <div className="hidden md:flex space-x-6">
+        <Link href="/" className="hover:text-red-400 transition">Home</Link>
+        <Link href="/generator" className="hover:text-red-400 transition">Generator</Link>
+        <Link href="/how-it-works" className="hover:text-red-400 transition">How It Works</Link>
+        <Link href="/pricing" className="hover:text-red-400 transition">Pricing</Link>
+        <Link href="/faq" className="hover:text-red-400 transition">FAQ</Link>
+        <Link href="/contact" className="hover:text-red-400 transition">Contact</Link>
+      </div>
     </nav>
   );
 }
