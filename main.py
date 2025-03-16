@@ -55,29 +55,37 @@ async def generate_story(request: Request):
 
     # ✅ Properly formatted prompt
     prompt = f"""
-    Create a dark romance novel with the following details:
+    ### 🖤 Dark Romance Story Generator
 
-    📌 **Main Character Information**
+    Write a **full-length, immersive dark romance novel** based on the following details:
+
+    📌 **Main Character Information**:
     - **Name:** {story_request.characterName}
     - **Age:** {story_request.characterAge}
     - **Traits:** {story_request.characterTraits}
     - **Backstory:** {story_request.characterBackstory}
 
-    📖 **Story Preferences**
+    📖 **Story Preferences**:
     - **Preferred Trope:** {trope_value}
     - **Preferred Ending:** {story_request.ending}
     - **Story Length:** {story_request.length}
     - **Spice Level:** {story_request.spiceLevel}
 
-    ### **Story Format**
-    - Write this story in detailed **chapter format**.
-    - Each chapter should be **at least 400-600 words long**.
-    - Provide **scene transitions** and detailed **character interactions**.
-    - Ensure proper **spacing** between paragraphs.
-    - Spice level determines **romantic/steamy content intensity**.
+    ### **Story Instructions**:
+    - **DO NOT** summarize the story.
+    - Write **FULL chapters** with rich **scene descriptions, dialogue, and emotional depth**.
+    - Ensure **smooth pacing** and a **gradual character development**.
+    - Each chapter should be **at least 500 words**.
+    - Keep a **consistent storyline** and **avoid open-ended notes or summaries**.
+    - **Separate chapters clearly** with `### Chapter X: [Title]`.
 
-    ✍️ **Now, generate the story with this formatting.**
+    ✍️ **Now, generate the story as if it's an actual book. Start with**:
+
+    ---
+    ### Chapter 1: [Title]
+    [Full scene]
     """
+
 
     # ✅ Log the generated prompt (NO INDENTATION ERRORS NOW)
     print("📝 Generated Prompt:\n", prompt)
