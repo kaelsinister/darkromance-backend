@@ -2,66 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 🎨 Custom Styling for Dark, Elegant Aesthetic */
+/* 🌑 High-End Modern Background */
 body {
-  @apply bg-black text-gray-300 flex items-center justify-center min-h-screen p-4;
-  font-family: "Georgia", serif;
+  @apply bg-black text-gray-300 flex flex-col items-center justify-center min-h-screen p-6;
 }
 
-/* 🖤 Story & Form Container */
+/* 🖤 Header Styling */
+.header {
+  @apply text-center mb-8;
+}
+
+.header h1 {
+  @apply text-4xl font-extrabold text-red-500 tracking-wide;
+}
+
+.header p {
+  @apply text-lg text-gray-400 italic;
+}
+
+/* 🏛️ Story Input Form */
 .story-container {
-  @apply bg-gray-900 shadow-lg shadow-red-800 rounded-xl p-6 max-w-2xl w-full border border-gray-700 transition-all leading-relaxed text-lg text-gray-300;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeIn 0.5s ease-out forwards;
-  line-height: 1.8;
-  letter-spacing: 0.5px;
-  word-spacing: 2px;
+  @apply bg-gray-900 shadow-lg shadow-red-700 rounded-2xl p-10 max-w-3xl w-full border border-gray-700 transition-all text-lg text-gray-300;
 }
 
-.story-container p {
-  text-indent: 20px; /* Indent first line of each paragraph */
-  margin-bottom: 1rem;
+/* ✍️ Input Fields */
+input, select, textarea {
+  @apply w-full p-3 border border-gray-600 bg-gray-800 text-white rounded focus:ring-2 focus:ring-red-400 transition;
 }
 
-/* 🌹 Form Title */
-.story-container h1 {
-  @apply text-red-400 text-2xl font-bold text-center mb-4;
-}
-
-/* 📜 Input Fields */
-input, select {
-  @apply w-full p-2 border border-gray-600 bg-gray-800 text-white rounded focus:ring-2 focus:ring-red-400 transition;
-}
-
-/* 🔥 Enhanced Button Styling */
+/* 🔥 Glowing Gradient Buttons */
 button {
-  @apply w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg shadow-md transition-all duration-200 ease-in-out;
+  @apply w-full bg-gradient-to-r from-red-600 to-rose-500 hover:from-red-700 hover:to-rose-600 text-white font-semibold py-3 rounded-lg shadow-lg transition-all duration-200 ease-in-out;
   transform: scale(1);
 }
 
 button:hover {
-  transform: scale(1.05); /* Slight enlargement on hover */
+  transform: scale(1.05);
 }
 
 button:active {
-  transform: scale(0.95); /* Subtle press effect */
+  transform: scale(0.95);
 }
 
-/* ✨ Mobile Adjustments */
-@media (max-width: 768px) {
-  .story-container {
-    @apply w-full p-4;
-  }
+/* 📜 Story Output */
+.story-output {
+  @apply bg-gray-900 shadow-md shadow-red-700 rounded-2xl p-8 mt-8 w-full border border-gray-700 leading-relaxed text-lg;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
-/* 🔄 Loader Animation */
+/* 🔄 Elegant Loader Animation */
 .loader {
   border: 3px solid rgba(255, 255, 255, 0.2);
   border-top: 3px solid #ff4d4d;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   animation: spin 1s linear infinite;
 }
 
@@ -79,5 +76,12 @@ button:active {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ✨ Mobile Adjustments */
+@media (max-width: 768px) {
+  .story-container {
+    @apply w-full p-4;
   }
 }
