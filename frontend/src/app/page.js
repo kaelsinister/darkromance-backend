@@ -18,7 +18,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "number" ? parseInt(value, 10) || "" : value,
+      customTrope: name === "trope" && value !== "Other" ? "" : formData.customTrope,
+    });
   };
 
   const handleSubmitForm = async (e) => {
@@ -30,7 +35,7 @@ export default function Home() {
       requestData.trope = formData.customTrope;
     }
 
-    const response = await fetch("https://darkromance-backend.onrender.com", {
+    const response = await fetch("https://darkromance-backend.onrender.com/generate-story/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestData),
@@ -60,16 +65,10 @@ export default function Home() {
         <input type="text" name="characterName" placeholder="Enter character name" className="mb-4" onChange={handleChange} />
 
         <label className="block text-gray-400">Main Character Age:</label>
-        <input
-          type="number"
-          name="characterAge"
-          placeholder="e.g. 27"
-          className="mb-4"
-          onChange={handleChange}
-        />
+        <input type="number" name="characterAge" value={formData.characterAge} placeholder="e.g. 27" className="mb-4" onChange={handleChange} />
 
         <label className="block text-gray-400">Story Length:</label>
-        <select name="length" onChange={handleChange} className="mb-4">
+        <select name="length" value={formData.length} onChange={handleChange} className="mb-4">
           <option value="">Select Length</option>
           <option value="Short">Short</option>
           <option value="Medium">Medium</option>
@@ -77,7 +76,7 @@ export default function Home() {
         </select>
 
         <label className="block text-gray-400">Spice Level:</label>
-        <select name="spiceLevel" onChange={handleChange} className="mb-4">
+        <select name="spiceLevel" value={formData.spiceLevel} onChange={handleChange} className="mb-4">
           <option value="">Select Spice Level</option>
           <option value="Mild">Mild</option>
           <option value="Medium">Medium</option>
@@ -85,7 +84,7 @@ export default function Home() {
         </select>
 
         <label className="block text-gray-400">Preferred Trope:</label>
-        <select name="trope" onChange={handleChange} className="mb-4">
+        <select name="trope" value={formData.trope} onChange={handleChange} className="mb-4">
           <option value="">Select Trope</option>
           <option value="Enemies to Lovers">Enemies to Lovers</option>
           <option value="Fake Relationship">Fake Relationship</option>
@@ -98,45 +97,19 @@ export default function Home() {
         </select>
 
         {formData.trope === "Other" && (
-          <input
-            type="text"
-            name="customTrope"
-            placeholder="Enter custom trope"
-            className="mb-4"
-            onChange={handleChange}
-          />
+          <input type="text" name="customTrope" value={formData.customTrope} placeholder="Enter custom trope" className="mb-4" onChange={handleChange} />
         )}
 
         <label className="block text-gray-400">Main Character Traits:</label>
-        <input
-          type="text"
-          name="characterTraits"
-          placeholder="e.g. brooding, mysterious"
-          className="mb-4"
-          onChange={handleChange}
-        />
+        <input type="text" name="characterTraits" value={formData.characterTraits} placeholder="e.g. brooding, mysterious" className="mb-4" onChange={handleChange} />
 
         <label className="block text-gray-400">Main Character Backstory:</label>
-        <textarea
-          name="characterBackstory"
-          placeholder="Brief backstory..."
-          className="mb-4"
-          onChange={handleChange}
-        ></textarea>
+        <textarea name="characterBackstory" value={formData.characterBackstory} placeholder="Brief backstory..." className="mb-4" onChange={handleChange}></textarea>
 
         <label className="block text-gray-400">Preferred Ending:</label>
-        <input
-          type="text"
-          name="ending"
-          placeholder="e.g. happy, tragic"
-          className="mb-6"
-          onChange={handleChange}
-        />
+        <input type="text" name="ending" value={formData.ending} placeholder="e.g. happy, tragic" className="mb-6" onChange={handleChange} />
 
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 rounded-lg shadow-lg transition-transform duration-200 ease-in-out"
-        >
+        <button type="submit" className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 rounded-lg shadow-lg transition-transform duration-200 ease-in-out">
           Generate Story
         </button>
       </form>

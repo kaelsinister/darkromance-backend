@@ -6,10 +6,10 @@ import os
 
 app = FastAPI()
 
-# Allow your frontend to communicate
+# Allow frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allow all origins (change if needed)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,6 +20,7 @@ class StoryRequest(BaseModel):
     length: str
     spiceLevel: str
     trope: str
+    customTrope: str = ""  # ✅ Added to handle "Other" trope selection
     characterTraits: str
     characterName: str
     characterAge: str
@@ -31,8 +32,11 @@ def read_root():
     return {"message": "Welcome to DarkRomance.ai API"}
 
 @app.post("/generate-story/")
-def generate_story(request: BaseModel):
+def generate_story(request: StoryRequest):
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    # Handle custom trope selection
+    trope_value = request.trope if request.trope != "Other" else request.customTrope
 
     prompt = f"""
     Create a dark romance story with the following details:
@@ -40,7 +44,7 @@ def generate_story(request: BaseModel):
     - Main Character Age: {request.characterAge}
     - Main Character Traits: {request.characterTraits}
     - Main Character Backstory: {request.characterBackstory}
-    - Preferred Trope: {request.trope}
+    - Preferred Trope: {trope_value}
     - Preferred Story Ending: {request.ending}
     Story Length: {request.length}
     Spice Level: {request.spiceLevel}
