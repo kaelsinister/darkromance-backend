@@ -23,7 +23,7 @@ class StoryRequest(BaseModel):
     customTrope: str = ""  # ✅ Added to handle "Other" trope selection
     characterTraits: str
     characterName: str
-    characterAge: str
+    characterAge: Union[str, int]
     characterBackstory: str
     ending: str
 
