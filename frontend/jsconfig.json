@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",  // ✅ Defines where absolute paths start
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./*"]  // ✅ Ensures absolute imports work correctly
     }
   }
 }
